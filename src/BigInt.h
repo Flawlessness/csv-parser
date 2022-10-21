@@ -1,11 +1,9 @@
 #ifndef _BIGINT_
 #define _BIGINT_
 
-#include<string>
-#include <string_view>
+#include <string>
 #include <vector>
 #include <iostream>
-#include <fstream>
 #include <charconv>
 
 class BigInt
@@ -30,8 +28,6 @@ public:
     BigInt(std::string);
 
     BigInt(const BigInt &);
-
-    ~BigInt();
 
     BigInt &operator=(const BigInt &);
 
@@ -101,6 +97,6 @@ BigInt operator|(const BigInt &, const BigInt &);
 
 std::ostream &operator<<(std::ostream &output, const BigInt &number);
 
-BigInt pow_bigint(BigInt &base, BigInt &power);
+BigInt pow_bigint(const BigInt &base, const BigInt &power);
 
 #endif

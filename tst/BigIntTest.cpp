@@ -164,9 +164,9 @@ TEST(BigIntTest, operator_assignment_test_2)
 
 TEST(BigIntTest, operator_not_negative_small_test)
 {
+    const int expected_result = -173684;
     BigInt a("-173684");
-    a = ~a;
-    EXPECT_EQ(std :: string (a), "173683");
+    EXPECT_EQ(static_cast<int>(~a), ~expected_result);
 }
 
 TEST(BigIntTest, operator_not_negative_big_test)
@@ -178,9 +178,9 @@ TEST(BigIntTest, operator_not_negative_big_test)
 
 TEST(BigIntTest, operator_not_positive_small_test)
 {
+    const int expected_result = 173684;
     BigInt a("173684");
-    a = ~a;
-    EXPECT_EQ(std :: string (a), "-173685");
+    EXPECT_EQ(static_cast<int>(~a), ~expected_result);
 }
 
 TEST(BigIntTest, operator_not_positive_big_test)
@@ -192,16 +192,16 @@ TEST(BigIntTest, operator_not_positive_big_test)
 
 TEST(BigIntTest, operator_not_null_test_1)
 {
+    const int expected_result = 0;
     BigInt a("0");
-    a = ~a;
-    EXPECT_EQ(std :: string (a), "-1");
+    EXPECT_EQ(static_cast<int>(~a), ~expected_result);
 }
 
 TEST(BigIntTest, operator_not_null_test_2)
 {
+    const int expected_result = -1;
     BigInt a("-1");
-    a = ~a;
-    EXPECT_EQ(std :: string (a), "0");
+    EXPECT_EQ(static_cast<int>(~a), ~expected_result);
 }
 
 TEST(BigIntTest, operator_prefix_increment_test)

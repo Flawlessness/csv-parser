@@ -1,4 +1,5 @@
 #include "BigInt.h"
+#include <string_view>
 
 namespace constant
 {
@@ -790,11 +791,6 @@ size_t BigInt::size() const
     return number.size() * 4;
 }
 
-BigInt::~BigInt()
-{
-    std::vector<int32_t>().swap(number);
-}
-
 BigInt operator+(const BigInt &a, const BigInt &b)
 {
     BigInt tmp = a;
@@ -857,19 +853,20 @@ std::ostream &operator<<(std::ostream &output, const BigInt &number)
     return output;
 }
 
-BigInt pow_bigint(BigInt &base, BigInt &power)
+BigInt pow_bigint(const BigInt &base,const BigInt &power)
 {
+    BigInt result = base;
     if (power == BigInt(1))
     {
         return base;
     }
-    BigInt tmp = base;
+    BigInt tmp = result;
     BigInt i = 2;
     BigInt sqr_i = 4;
-    base *= base;
+    result *= result;
     while (sqr_i <= power)
     {
-        base *= base;
+        result *= result;
         i += i;
         sqr_i = 1;
         sqr_i *= i;
@@ -877,7 +874,7 @@ BigInt pow_bigint(BigInt &base, BigInt &power)
     }
     for (; i < power; ++i)
     {
-        base *= tmp;
+        result *= tmp;
     }
-    return base;
+    return result;
 }
