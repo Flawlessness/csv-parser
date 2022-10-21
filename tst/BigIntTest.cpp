@@ -63,8 +63,20 @@ TEST(BigIntTest, string_constructor_null_test_1)
 
 TEST(BigIntTest, string_constructor_null_test_2)
 {
-    BigInt a("");
-    EXPECT_EQ(std :: string (a), "0");
+    BigInt a("-0123");
+    EXPECT_EQ(std :: string (a), "-123");
+}
+
+TEST(BigIntTest, string_constructor_null_test_3)
+{
+    BigInt a("-0000000000123");
+    EXPECT_EQ(std :: string (a), "-123");
+}
+
+TEST(BigIntTest, string_constructor_null_test_4)
+{
+    BigInt a("-000000123");
+    EXPECT_EQ(std :: string (a), "-123");
 }
 
 TEST(BigIntTest, string_constructor_exception_test_1)
@@ -75,6 +87,51 @@ TEST(BigIntTest, string_constructor_exception_test_1)
 TEST(BigIntTest, string_constructor_exception_test_2)
 {
     EXPECT_THROW(BigInt a("21+32"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_3)
+{
+    EXPECT_THROW(BigInt a(""), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_4)
+{
+    EXPECT_THROW(BigInt a("-+1"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_5)
+{
+    EXPECT_THROW(BigInt a("+-1"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_6)
+{
+    EXPECT_THROW(BigInt a("+-----1"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_7)
+{
+    EXPECT_THROW(BigInt a("-+++++1"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_8)
+{
+    EXPECT_THROW(BigInt a("-------1"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_9)
+{
+    EXPECT_THROW(BigInt a("+++++++1"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_10)
+{
+    EXPECT_THROW(BigInt a("-+"), std :: invalid_argument);
+}
+
+TEST(BigIntTest, string_constructor_exception_test_11)
+{
+    EXPECT_THROW(BigInt a("+-"), std :: invalid_argument);
 }
 
 TEST(BigIntTest, bigint_constructor_positive_test)
@@ -277,6 +334,13 @@ TEST(BigIntTest, operator_addition_assign_test_14)
     EXPECT_EQ(std :: string (a), "0");
 }
 
+TEST(BigIntTest, operator_addition_assign_test_15)
+{
+    BigInt a("-623492"), b("-859038539875934578347");
+    a += b;
+    EXPECT_EQ(std :: string (a), "-859038539875935201839");
+}
+
 TEST(BigIntTest, operator_subtraction_assign_test_1)
 {
     BigInt a("623492347856934785"), b("4324234");
@@ -373,6 +437,13 @@ TEST(BigIntTest, operator_subtraction_assign_test_14)
     BigInt a("-989898989898998"), b("-878732424124235451234342424344234");
     a -= b;
     EXPECT_EQ(std :: string (a), "878732424124235450244443434445236");
+}
+
+TEST(BigIntTest, operator_subtraction_assign_test_15)
+{
+    BigInt a("-623492"), b("-859038539875934578347");
+    a -= b;
+    EXPECT_EQ(std :: string (a), "859038539875933954855");
 }
 
 TEST(BigIntTest, operator_multipl_assign_test_1)

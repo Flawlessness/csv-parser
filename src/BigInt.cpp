@@ -1,5 +1,4 @@
 #include "BigInt.h"
-#include <string_view>
 
 namespace constant
 {
@@ -94,7 +93,7 @@ BigInt::BigInt(std::string input_number)
     std::string_view input_number_view{input_number};
     if (input_number_view.empty())
     {
-        number.push_back(0);
+        throw std::invalid_argument("Empty string.");
     }
     if (input_number_view[0] == '-')
     {
@@ -108,7 +107,7 @@ BigInt::BigInt(std::string input_number)
         }
         input_number_view.remove_prefix(1);
     }
-    if (input_number[0] == '+')
+    else if (input_number_view[0] == '+')
     {
         input_number_view.remove_prefix(1);
     }
@@ -135,6 +134,15 @@ BigInt::BigInt(std::string input_number)
             break;
         }
     }
+    size_t size_vector = number.size();
+    size_t real_size = size_vector;
+    size_vector--;
+    while ((number[size_vector] == 0) && (real_size > 1))
+    {
+        real_size = size_vector;
+        size_vector--;
+    }
+    number.resize(real_size);
 }
 
 BigInt::BigInt(const BigInt &other)
@@ -170,7 +178,7 @@ bool BigInt::operator<(const BigInt &other) const
     {
         return number.size() * sign < other.number.size() * sign;
     }
-    for (int64_t i = ((int64_t) number.size() - 1); i >= 0; --i)
+    for (int64_t i = static_cast<int64_t> (number.size() - 1); i >= 0; --i)
     {
         if (number[i] != other.number[i])
         {
@@ -197,8 +205,7 @@ bool BigInt::operator>=(const BigInt &other) const
 
 BigInt BigInt::operator+() const
 {
-    BigInt tmp = *this;
-    return tmp;
+    return *this;
 }
 
 BigInt BigInt::operator-() const
@@ -354,7 +361,7 @@ BigInt &BigInt::operator-=(const BigInt &other)
 BigInt &BigInt::operator*=(const BigInt &other)
 {
     size_t this_size_vector = number.size();
-    size_t other_size_vector = (int64_t) other.number.size();
+    size_t other_size_vector = static_cast<int64_t> (other.number.size());
     size_t size_vector = this_size_vector + other_size_vector;
     std::vector<int64_t> tmp;
     tmp.resize(size_vector, 0);
@@ -363,7 +370,7 @@ BigInt &BigInt::operator*=(const BigInt &other)
     {
         for (size_t j = 0; j < other_size_vector; ++j)
         {
-            tmp[i + j] += (int64_t) number[i] * (int64_t) other.number[j];
+            tmp[i + j] += static_cast<int64_t> (number[i]) * static_cast<int64_t> (other.number[j]);
             if (tmp[i + j] / constant::MAX_NUM != 0)
             {
                 tmp[i + j + 1] += tmp[i + j] / constant::MAX_NUM;
@@ -373,7 +380,7 @@ BigInt &BigInt::operator*=(const BigInt &other)
     }
     for (size_t i = 0; i < size_vector; ++i)
     {
-        number[i] = (int32_t) tmp[i];
+        number[i] = static_cast<int32_t> (tmp[i]);
     }
     size_t real_size = size_vector;
     size_vector--;
@@ -410,7 +417,7 @@ BigInt &BigInt::operator/=(const BigInt &other)
         while (left <= right)
         {
             mid = (left + right) >> 1;
-            BigInt tmp((int32_t) mid);
+            BigInt tmp(static_cast<int32_t> (mid));
             tmp *= other_copy;
             if (tmp < current)
             {
@@ -457,7 +464,7 @@ BigInt &BigInt::operator%=(const BigInt &other)
     {
         throw std::invalid_argument("Division by zero.");
     }
-    int64_t this_vector_size = (int64_t) number.size();
+    int64_t this_vector_size = static_cast<int64_t> (number.size());
     BigInt current(0), other_copy(other);
     other_copy.sign = 1;
     for (int64_t i = (this_vector_size - 1); i >= 0; --i)
@@ -468,7 +475,7 @@ BigInt &BigInt::operator%=(const BigInt &other)
         while (left <= right)
         {
             mid = (left + right) >> 1;
-            BigInt tmp((int32_t) mid);
+            BigInt tmp(static_cast<int32_t> (mid));
             tmp *= other_copy;
             if (tmp < current)
             {
