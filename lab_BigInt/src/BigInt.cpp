@@ -123,14 +123,14 @@ BigInt::BigInt(std::string input_number)
     {
         if (str_len >= 9)
         {
-            int tmp;
+            int tmp = 0;
             str_len -= 9;
             std::from_chars(input_number_view.data() + str_len, input_number_view.data() + str_len + 9, tmp);
             number.push_back(tmp);
         }
         else
         {
-            int tmp;
+            int tmp = 0;
             std::from_chars(input_number_view.data(), input_number_view.data() + str_len, tmp);
             number.push_back(tmp);
             break;
