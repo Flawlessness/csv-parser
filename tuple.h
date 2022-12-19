@@ -1,5 +1,4 @@
-#ifndef SUPER_CSV_TUPLE
-#define SUPER_CSV_TUPLE
+#pragma once
 
 #include <tuple>
 #include <fstream>
@@ -9,7 +8,7 @@ template<std::size_t> struct int_ {};
 
 template<class Ch, class Tr, class Tuple, size_t Pos>
 std::basic_ofstream<Ch, Tr> &print_tuple(std::basic_ofstream<Ch, Tr> &os, const Tuple &t, int_<Pos>) {
-    os << std::get<std::tuple_size<Tuple>::value - Pos>(t) << '\t';
+    os << std::get<std::tuple_size<Tuple>::value - Pos>(t) << ", ";
     return print_tuple(os, t, int_<Pos - 1>());
 }
 
@@ -21,7 +20,9 @@ std::basic_ofstream<Ch, Tr> &print_tuple(std::basic_ofstream<Ch, Tr> &os, const 
 
 template<class Ch, class Tr, class... Args>
 std::basic_ofstream<Ch, Tr> &operator<<(std::basic_ofstream<Ch, Tr> &os, const std::tuple<Args...> &t) {
+    os << "(";
     print_tuple(os, t, int_<sizeof ...(Args)>());
+    os << ")";
     return os;
 }
 
@@ -29,7 +30,12 @@ template<class T>
 std::istringstream &read_element(std::istringstream &is, T &a) {
     std::string data;
     getline(is, data, ',');
-    std::istringstream(data) >> a;
+    std::istringstream in(data);
+    in >> a;
+    if(in.fail())
+    {
+        throw std::invalid_argument("Invalid input data.");
+    }
     return is;
 }
 
@@ -50,10 +56,10 @@ std::basic_ifstream<Ch, Tr> &operator>>(std::basic_ifstream<Ch, Tr> &is, std::tu
     std::string str;
     getline(is, str);
     if(str.empty())
+    {
         return is;
+    }
     std::istringstream instr(str);
     read_tuple(instr, t, int_<sizeof ...(Args)>());
     return is;
 }
-
-#endif

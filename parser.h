@@ -1,5 +1,4 @@
-#ifndef CSV_PARSER
-#define CSV_PARSER
+#pragma once
 
 #include "tuple.h"
 
@@ -11,22 +10,25 @@ public:
         size_t pos = 0;
         std::tuple<Args...> string_tuple;
     public:
-
-        Iterator(std::ifstream *in) : input(in)
+        explicit Iterator(std::ifstream *in) : input(in)
         {
             if(in != nullptr)
+            {
                 (*in) >> string_tuple;
-            else pos = -1;
+                if(input->eof())
+                {
+                    input = nullptr;
+                }
+            }
+            else
+            {
+                pos = -1;
+            }
         }
-
         ~Iterator() = default;
-
         bool operator!=(const Iterator &a) const;
-
         Iterator &operator++();
-
         std::tuple<Args...> &operator*();
-
         std::tuple<Args...> *operator->();
     };
 
@@ -41,26 +43,31 @@ private:
 
 template<class... Args>
 CSVParser<Args...>::CSVParser(std::ifstream &in, int skip) {
-    std::tuple<Args ...> row;
     std::string str;
     for (int index = 0; index < skip; index++)
+    {
         getline(in, str);
+    }
     input = &in;
 }
 
 template<class... Args>
 bool CSVParser<Args...>::Iterator::operator!=(const typename CSVParser<Args...>::Iterator &a) const {
-    return pos != a.pos;
+    return (input != a.input) | (pos != a.pos);
 }
 
 template<class... Args>
 typename CSVParser<Args...>::Iterator &CSVParser<Args...>::Iterator::operator++() {
     if(input == nullptr)
-        return *this;
-    (*input) >> string_tuple;
-    if(input->eof()) {
-        input = nullptr;
+    {
         pos = -1;
+        return *this;
+    }
+    (*input) >> string_tuple;
+    if(input->eof())
+    {
+        pos++;
+        input = nullptr;
         return *this;
     }
     pos++;
@@ -86,5 +93,3 @@ template<class... Args>
 typename CSVParser<Args...>::Iterator CSVParser<Args...>::end() {
     return Iterator(nullptr);
 }
-
-#endif
