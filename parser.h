@@ -53,7 +53,7 @@ CSVParser<Args...>::CSVParser(std::ifstream &in, int skip) {
 
 template<class... Args>
 bool CSVParser<Args...>::Iterator::operator!=(const typename CSVParser<Args...>::Iterator &a) const {
-    return (input != a.input) | (pos != a.pos);
+    return (input != a.input) || (pos != a.pos);
 }
 
 template<class... Args>
